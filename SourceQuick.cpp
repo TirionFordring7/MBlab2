@@ -1,3 +1,6 @@
+/**
+ @file
+*/
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -47,7 +50,6 @@ public:
     /**
         * @brief Метод для вывода данных футболиста в файл
         * @param file поток файла, в который выводятся данные
-        * @return void
     */
     void writeToFile(ofstream& file) {
         file << country << "," << fullName << "," << clubName << "," << position << "," << matchesPlayed << "," << goalsScored << endl;
@@ -147,7 +149,6 @@ using namespace std;
    * @param mas ссылка на std::vector, содержащий в себе данный типа нашего класса, т. е. массив подвергающийся сортировке
    * @param first индекс массива, определяющий левую границу текуюшей части, что требуется отсортировать
    * @param last индекс массива, определяющий правую границу текуюшей части, что требуется отсортировать
-   * @return void
 */
 void quicksort(vector<FootballPlayer>& mas, int first, int last)
 {
@@ -173,13 +174,16 @@ void quicksort(vector<FootballPlayer>& mas, int first, int last)
    * @param arr ссылка на std::vector, содержащий в себе данный типа нашего класса, т. е. массив подвергающийся поиску
    * @param n размер массива
    * @param key искомое значение
+   * @param res массив,в который должны быть записаны результаты поиска
    * @return int
 */
-int linearSearch(vector<FootballPlayer>& arr, int n, string key) {
-    for (int i = 0; i < n; i++)
-        if (arr[i].country == key)
-            return i;
-    return -1;
+int linearSearch(vector<FootballPlayer>& arr, int n, string key, vector<FootballPlayer>& res) {
+    for (int i = 0; i < n; i++) {
+        if (arr[i].country == key) {
+            res.push_back(arr[i]);
+        }
+    }
+    return 1;
 }
 /**
    * @brief Реализация алгоритма бинарного поиска
@@ -204,7 +208,7 @@ int binarySearch(vector<FootballPlayer>& arr, int l, int r, string key) {
 
 const int SIZE = 100000; //  количество объектов
 
-multimap<string, FootballPlayer> mmap;
+//multimap<string, FootballPlayer> mmap;
 
 int main() {
     ifstream file("players100000.txt");
@@ -212,7 +216,7 @@ int main() {
         cerr << "Не удается открыть файл!\n";
         exit(1);
     }
-    //int fi;
+    int fi;
     int i = 0; // Счетчик объектов
     vector<FootballPlayer> vec(SIZE);// Массив объектов
 
@@ -230,30 +234,63 @@ int main() {
         getline(line_stream, matchesPlayed, ',');
         getline(line_stream, goalsScored, ',');
         FootballPlayer obj(country, fullName, clubName, position, stoi(matchesPlayed), stoi(goalsScored));
-        //vec[i] = obj;
+        vec[i] = obj;
         //arr[i] = obj;
-        mmap.emplace(obj.country,obj);
+        //mmap.emplace(obj.country,obj);
         i++;
 
         // создание объектов и добавление их в массив objs
 
     }
-    
+    //int j = 0;
+    int fi1,fi2;
+    vector<FootballPlayer> vec1;
     clock_t start = clock();
-    auto fi = mmap.find("France");
+    //auto fi = mmap.equal_range("France");
     //quicksort(vec, 0, SIZE - 1);
-    //fi = binarySearch(vec,0,SIZE,"France");
+    //fi = binarySearch(vec, SIZE, "France", vec1);
+    linearSearch(vec,SIZE,"France",vec1);
+    /*fi1 = fi;
+    fi2 = fi;
+    while (vec[fi1].country == vec[fi1+1].country || fi1 == 999) {
+        //vec1[j] = vec[fi1];
+        //j++;
+        fi1++;
+        
+    }
+    
+    while (vec[fi2].country == vec[fi2 - 1].country || fi1 == 0) {
+        //vec1[j] = vec[fi2];
+        //j++;
+        fi2--;
+    }
+    */
     clock_t end = clock();
+    //printf("%d\n", fi1);
+    //printf("%d\n", fi2);
     double seconds = (double)(end - start) / CLOCKS_PER_SEC;
-    string namef = "FindMM";
+    string namef = "FindL";
     namef.append(to_string(SIZE));
     namef.append(".txt");
     ofstream fileout(namef);
-    /*for (int i = 0; i < SIZE; i++) {
-        vec[i].writeToFile(fileout);
+    for (int i = 0; i < vec1.size(); i++) {
+        vec1[i].writeToFile(fileout);
+    }
+    /*while (fi.first != fi.second) {
+        fi.first->second.writeToFile(fileout);
+        fi.first++;
+    }
+    int tfi = fi;
+    while (vec[fi].country == vec[fi+1].country || fi == 999) {
+        vec[fi].writeToFile(fileout);
+        fi++;
+        
+    }
+    while (vec[tfi].country == vec[tfi-1].country || tfi == 0) {
+        vec[tfi].writeToFile(fileout);
+        tfi--;
     }*/
     fileout << seconds << endl;
-    fi->second.writeToFile(fileout);
     file.close();
     fileout.close();
 
